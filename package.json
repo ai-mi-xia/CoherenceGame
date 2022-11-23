@@ -10,6 +10,8 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.18.2",
+    "p5.play": "^3.2.15",
+    "planck": "^1.0.0-alpha.4",
     "socket.io": "^4.5.4",
     "telnet-client": "^2.0.6",
     "telnet-stream": "^1.1.0",

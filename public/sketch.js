@@ -1,5 +1,4 @@
-let speed;
-
+let sprite;
 //Open and connect socket
 let socket = io();
 
@@ -17,13 +16,14 @@ function setup() {
     console.log(obj);
     drawPos(obj);
   });
+
+	sprite = new Sprite();
+	sprite.diameter = 50;
 }
 
 function draw() {
+    
     socket.on('newdata', function(score){
-      let character;
-        character = new Sprite();
-        sprite.diameter = 50;
         if(score > 0 && score < 1){
             background(234,0,0);
          } 
@@ -35,4 +35,6 @@ function draw() {
          }
         //console.log(score);
     })
+
+
 }
