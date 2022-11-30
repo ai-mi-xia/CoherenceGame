@@ -1,17 +1,28 @@
-let player, gems;
+//GLOBAL VARIABLES
+let player, gems, coin;
 let angle = 0;
 let pace;
+let coherenceScore;
+let collectedCoin;
+let img;
 //Open and connect socket
 let socket = io();
 
-//Listen for confirmation of connection
+//SOCKET.IO - Listen for confirmation of connection
 socket.on('connect', function () {
   console.log("Connected");
 });
 
+function preload() {
+  img = loadImage('PixelSky.png');
+}
+
 function setup() {
-  createCanvas(windowWidth, windowHeight);
-  //background(232);
+  
+  createCanvas(800, 600);
+
+
+  gameOneSetup();
 
   //Listen for messages named 'data' from the server
   socket.on('data', function (obj) {
@@ -20,7 +31,8 @@ function setup() {
   });
 
   slider = createSlider(0, 1, 0.5, 0.05);
-  slider.style("width", "150px"); 
+  slider.position(width / 2.2, 860);
+  slider.style("width", "150px");
 
   //Gems setup
   // gems = new Group();
@@ -36,51 +48,79 @@ function setup() {
 
 function draw() {
 
-pace = slider.value();
   
-    //PACER LINE
-    pacerLine();
+  // preload();
+
+  //PACER LINE
+  pace = slider.value();
+  pacerLine();
+
+  //Coherence Score from Sockets.io
   socket.on('newdata', function (score) {
-    background(150); 
-    textSize(32);
-    text(score, 10, 30);
-    let coherenceVal = map(score, 0, 6, 1, 500);
-    
-    circle(500, 500, coherenceVal);
-   
-    
-    // player = new Sprite();
-    // player.r = coherenceVal
-    //player.speed = coherenceVal;
-    //console.log(coherenceVal);
 
-    // if (score > 0 && score < 1) {
+    //put into global variable
+    coherenceScore = score
 
-    //   background(243, 0, 0);
-    //   //console.log("score")
-    // }
-    // else if (score > 1 && score < 2) {
-    //   //player.speed = 10;
-    //   background(0, 243, 0);
-    //  //console.log("score")
-
-    // }
-    // else if (score > 2 && score < 3) {
-    //   //player.speed = 20;
-    //   background(0, 0, 234);
-    //   //console.log("score")
-    // }
-
-    //display coherence score
-
-    //console.log(player.speed);
   })
 
+  //startScreen();
+  gameOne();
 
-  //Keyboard controls
 
-  //player.speed = 5;
 
+}
+
+function startScreen(){
+background(230);
+//Check if emWave pro is connected
+}
+
+//GAME ONE - HOW TO INCREASE COHERENCE
+function gameOne() {
+background(150);
+  image(img, 0, 0, width, height, 0, 0, img.width, img.height);
+  //DISPLAY COHERENCE SCORE
+  noStroke();
+  textSize(32);
+  text(coherenceScore, width / 2.2, (height / 12));
+  textSize(16);
+  text("Get your coherence score up to increase your speed!", width / 4, (height / 9));
+
+  let coherenceVal = map(coherenceScore, 0, 6, 0, 12);
+
+  player.direction = 'right'
+
+
+  if (coherenceScore > 0 && coin.removed == false) {
+    player.speed = coherenceScore
+  } else if (coin.removed == true) {
+    player.speed = 0;
+    textSize(24);
+    text("Good Job!", width / 4, (height / 2));
+  } else {
+    player.speed = 0;
+  }
+
+  if (player.overlaps(coin)) {
+    coin.remove();
+  }  
+
+}
+
+function gameOneSetup(){
+  player = new Sprite(width / 10, height / 2, 50);
+
+  coin = new Sprite((width / 10) * 9, height / 2, 30);
+}
+
+//GAME TWO - COHERENCE IN STRESSFUL SITUATIONS
+
+function gameTwoSetup(){
+
+}
+
+function gameTwo(){
+    //Keyboard controls
   // if (kb.pressing('up')) {
   //   player.direction = -90;
   // } else if (kb.pressing('down')) {
@@ -95,8 +135,7 @@ pace = slider.value();
 
 
   // gem collect on mouse over
-  // clear();
-
+  //clear();
 
 }
 
@@ -105,9 +144,10 @@ pace = slider.value();
 // }
 
 function pacerLine() {
-  let r = map(sin(angle), 1, -1, windowWidth/4, (windowWidth/4)*3);
+  let r = map(sin(angle), 1, -1, width / 4, (width / 4) * 3);
+  fill(0)
   circle(r, (height / 10) * 9, 10);
-  stroke(255);
-  line(windowWidth/4, (height / 10) * 9, (windowWidth/4)*3, (height / 10) * 9);
+  stroke(0);
+  line(width / 4, (height / 10) * 9, (width / 4) * 3, (height / 10) * 9);
   angle += pace;
 }
