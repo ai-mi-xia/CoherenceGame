@@ -18,11 +18,11 @@ socket.on('connect', function () {
 });
 
 function preload() {
-  img = loadImage('PixelSky.png');
+  img = loadImage('moonNightBG.png');
 }
 
 function setup() {
-  createCanvas(800, 600);
+  createCanvas(950, 600);
 
   // catMC = loadAni('catWalkRight',4)
 
@@ -33,7 +33,7 @@ function setup() {
   });
 
   slider = createSlider(0, 1, 0.5, 0.05);
-  slider.position(width / 2.2, 860);
+  slider.position(width / 1.9, 850);
   slider.style("width", "150px");
 
 
@@ -51,6 +51,16 @@ function setup() {
 
 function draw() {
 
+
+
+  //Coherence Score from Sockets.io
+  socket.on('newdata', function (score) {
+
+    //put into global variable
+    coherenceScore = score
+
+  })
+
   startMenu();
 
   if (MENU == 1 && setupTrigger == true) {
@@ -64,17 +74,6 @@ function draw() {
 
   if (MENU == 2) {
   }
-
-  // preload();
-
-  //Coherence Score from Sockets.io
-  socket.on('newdata', function (score) {
-
-    //put into global variable
-    coherenceScore = score
-
-  })
-
   //startScreen();
 
 
@@ -93,17 +92,19 @@ function gameOne() {
 
   //DISPLAY COHERENCE SCORE
   noStroke();
+  fill(255)
   textSize(32);
-  text(coherenceScore, width / 2.2, (height / 12));
+  text(coherenceScore, width / 2.1, (height / 12));
   textSize(16);
-  text("Get your coherence score up to increase your speed!", width / 4, (height / 9));
+  
+  text("You are the cat. Get your coherence score up to 2 to get the strawberry!", width / 4, (height / 9));
 
   let coherenceVal = map(coherenceScore, 0, 6, 0, 12);
 
   player.direction = 'right'
 
 
-  if (coherenceScore > 0 && coin.removed == false) {
+  if (coherenceScore > 2 && coin.removed == false) {
     player.speed = coherenceScore
   } else if (coin.removed == true) {
     player.speed = 0;
@@ -123,9 +124,11 @@ function gameOneSetup() {
   console.log(MENU)
   player = new Sprite(width / 10, height / 2, 50);
   // player.addAni('catWalkRight',4)
-  // player.addAni('walkRight','catWalkRight/tile1.png',4)
+  player.addAni('walkRight','catWalkRight/tile1.png',4)
+  player.r = 5
 
   coin = new Sprite((width / 10) * 9, height / 2, 30);
+  coin.addAni('strawb','strawberry.png')
 }
 
 //GAME TWO - COHERENCE IN STRESSFUL SITUATIONS
@@ -168,18 +171,18 @@ function startMenu() {
   image(img, 0, 0, width, height, 0, 0, img.width, img.height);
   print(mouseX, mouseY)
   textSize(26);
-  text('lets play!', width / 2, height / 2)
+  text('Choose a Game Mode to Play ->', width / 4, height / 2)
 
   let leftAlign = width - 200
 
   //SP BUTTON
-  fill(0, 255, 0);
+  fill(255, 150, 210);
   rect(leftAlign - 20, 50, 200, 75);
   fill(255);
   text('Single Player', leftAlign, 106);
 
   //MP BUTTON
-  fill(255, 0, 255);
+  fill(236, 150, 255);
   rect(leftAlign - 20, 200, 200, 75);
   fill(255);
   text('MultiPlayer', leftAlign, 248);
@@ -193,7 +196,7 @@ function startMenu() {
 
 function mouseClicked() {
   if (MENU == 0) {
-    if (mouseX < 780 && mouseX > 577) {
+    if (mouseX < 930 && mouseX > 730) {
       if (mouseY < 125 && mouseY > 50) {
         MENU = 1
       }
