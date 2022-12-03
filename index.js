@@ -54,7 +54,7 @@ tSocket.on("data", function(buffer){
                 let valueEP = jsonAccess.D01.$.EP
                 let rawCoherenceScore = Math.log((valueEP/10)+1);
                 let coherenceScore = Math.round((rawCoherenceScore + Number.EPSILON) * 100) / 100
-                testFunction(coherenceScore);
+                testFunction(valueS);
                 console.log(testFunction);
              }
 
