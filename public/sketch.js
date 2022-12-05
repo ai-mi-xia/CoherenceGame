@@ -1,17 +1,23 @@
 //GLOBAL VARIABLES
-let player, gems, coin;
+let myFont;
 let angle = 0;
 let pace, slider;
 let coherenceScore;
+let player, gems, coin;
 let collectedCoin;
-let myFont;
+let socket = io();
+
+//game variables
 let BGNight, BGMoon, BGSpace;
 let MENU = 0
 let SPbutton, MPbutton;
 let catMC;
+let bananas;
+let floor;
+let count = 0;
 let setupTrigger = true
 let setupTrigger2 = true
-let socket = io();
+let setupTrigger3 = true
 let Low, Med, High;
 
 
@@ -43,12 +49,6 @@ function setup() {
   //Setting Coherence Scores
 
 
-  // if (MENU == 1) {
-  //   player = new Sprite(width / 10, height / 2, 50);
-
-  // coin = new Sprite((width / 10) * 9, height / 2, 30);
-
-
 }
 
 function draw() {
@@ -71,6 +71,9 @@ function draw() {
   }
   if (MENU == 1) {
     tutorial();
+    if (mouseButton == RIGHT) {
+      MENU = 0
+    }
   }
 
   if (MENU == 2 && setupTrigger2 == true) {
@@ -79,8 +82,19 @@ function draw() {
     setupTrigger2 = false
   }
   if (MENU == 2) {
+    
     gameOne();
   }
+
+  if (MENU == 3 && setupTrigger3 == true) {
+    gameTwoSetup();
+    bpSlider(470, 840);
+    setupTrigger3 = false
+  }
+  if (MENU == 3) {
+    gameTwo();
+  }
+
 
 }
 
@@ -104,7 +118,7 @@ function tutorial() {
   fill(255)
   textSize(26);
   textAlign(CENTER);
-  text('How to increase Heart Coherence (and help Cappy!)', width / 2, height / 8)
+  text('How to increase Heart Coherence and help Shortcake!', width / 2, height / 8)
 
   noStroke();
   textSize(18);
@@ -127,6 +141,12 @@ function tutorial() {
   text('TIP: Follow the breath pacer below,', width / 2, (height / 5) * 4)
   text('and use the slider to adjust speed of the pacer!', width / 2, (height / 6) * 5)
 
+  //CLICK RIGHT TO RETURN
+  textSize(12);
+  fill(200)
+  textAlign(CENTER);
+  text('(Right click to return to Menu)', width / 2, height / 16)
+
   //BREATH PACER
   pace = slider.value();
   pacerLine();
@@ -136,7 +156,6 @@ function tutorial() {
 //GAME ONE
 function gameOne() {
 
-  background(150);
   image(BGMoon, 0, 0, width, height, 0, 0, BGMoon.width, BGMoon.height);
 
   //BREATH PACER
@@ -174,7 +193,6 @@ function gameOne() {
 }
 
 function gameOneSetup() {
-  console.log(MENU)
 
   //Cat Sprite & Animation Creation
   player = new Sprite(width / 10, height / 2, 50);
@@ -184,46 +202,86 @@ function gameOneSetup() {
   player.addAni('catStand', 'catStand/tile1.png', 20)
   player.r = 5
 
-  //Watermelon Sprite
-  coin = new Sprite((width / 10) * 9, height / 2, 30);
-  coin.addAni('strawb', 'strawberry.png')
+   //Watermelon Sprite
+   coin = new Sprite((width / 10) * 9, height / 2, 30);
+   coin.addAni('strawb', 'strawberry.png')
 }
 
 //GAME TWO - COHERENCE IN STRESSFUL SITUATIONS
 
 function gameTwoSetup() {
-  //Gems setup
-  // gems = new Group();
-  // gems.diameter = 10;
-  // gems.x = () => random(0, width);
-  // gems.y = () => random(0, height);
-  // gems.amount = 80;
-  // player.overlaps(gems, collect);
+
+   //Cat Sprite & Animation Creation
+   player = new Sprite(width / 10, 490, 50);
+   player.addAni('walkRight', 'catWalkRight/tile1.png', 4)
+   player.addAni('walkLeft', 'catWalkLeft/tile1.png', 4)
+   player.addAni('catSleep', 'catSleep/tile1.png', 9)
+   player.addAni('catStand', 'catStand/tile1.png', 20)
+   player.addAni('catStandStraight', 'catStandStraight.png')
+   player.r = 5
+
+   floor = new Sprite(width/2, 512, width, 5, 'static');
+   floor.color = ("white")
+
+ //Banana Sprite
+  bananas = new Group();
+  bananas.addAni('nanerz', 'banana/tile1.png',9)
+  // a is the player, b is the item
+  player.overlap(bananas, (a, b) => b.remove());
+  bananas.overlap(floor, (a, b) => a.remove());
+  
+
+
 }
 
 function gameTwo() {
-  //Keyboard controls
-  // if (kb.pressing('up')) {
-  //   player.direction = -90;
-  // } else if (kb.pressing('down')) {
-  //   player.direction = 90;
-  // } else if (kb.pressing('left')) {
-  //   player.direction = 180;
-  // } else if (kb.pressing('right')) {
-  //   player.direction = 0;
-  // } else {
-  //   player.speed = 0;
-  // }
 
+  image(BGSpace, 0, 0, width, height, 0, 0, BGSpace.width, BGSpace.height);
 
-  // gem collect on mouse over
-  //clear();
+  //Breath Pacer BG
+  fill(140, 136, 247)
+  rect(width/2,560,width,100)
+
+  //BREATH PACER
+  pace = slider.value();
+  pacerLine();
+
+  //DISPLAY COHERENCE SCORE
+  noStroke();
+  fill(255)
+  textSize(32);
+  text(coherenceScore, width / 2.1, (height / 12));
+  textSize(16);
+
+  text("Dodge the bananas while you build up coherence!", width / 2, (height / 8));
+  text("Use the left and right arrow keys to move Shortcake", width / 2, (height / 6));
+  player.ani = 'catStandStraight'
+
+  //Spawn Bananas
+	if (count >= 25) {
+		let Banana = new bananas.Sprite(random(10, width - 10), -10, 20, 20);
+		bananas.vel.y = 2;
+		count = 0;
+	}
+
+  //Keyboard Controls
+	if (kb.pressing('ArrowLeft')) {
+		player.vel.x = -10;
+    player.ani = 'walkLeft'
+	} else if (kb.pressing('ArrowRight')) {
+		player.vel.x = 10;
+    player.ani = 'walkRight'
+	} else {
+		player.vel.x = 0;
+	}
+
+	count++;
 
 }
 
-// function collect(player, gem) {
-//   gem.remove();
-// }
+function collect(player, gem) {
+  gem.remove();
+}
 
 function startMenu() {
   textSize(28);
@@ -277,8 +335,9 @@ function mouseClicked() {
         MENU = 2
         console.log("menu2")
       }
-      if (mouseX < 614 && mouseX > 814) {
+      if (mouseX < 814 && mouseX > 614) {
         MENU = 3
+        console.log("menu3")
       }
     }
   }
