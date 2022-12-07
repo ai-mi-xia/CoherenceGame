@@ -1,12 +1,33 @@
 body{
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'VT323'
   color:rgb(0, 0, 0);
   background-color: rgb(255, 231, 203);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  -webkit-animation-delay: 0.1s;
+    -webkit-animation-name: fontfix;
+    -webkit-animation-duration: 0.1s;
+    -webkit-animation-iteration-count: 1;
+    -webkit-animation-timing-function: linear;
 
+}
+
+@-webkit-keyframes fontfix {
+  from { opacity: 1; }
+  to   { opacity: 1; }
+}
+
+.instructions{
+  font-family: 'VT323'
+}
+
+.instructiveText{
+  font-size: 16pt;
+  margin-right: 20%;
+  margin-left: 20%;
+  color: rgb(76, 42, 90);
 }
 
 #canvas-container {
@@ -17,12 +38,25 @@ body{
     z-index: -1;
 }
 
+input[type=range] {
+  position: element(#canvas-container);
+  transform: translateY(-100%); 
+  display: flex;
+  align-items: center;
+  z-index: 0;
+ 
+}
+
 h1{
   text-align: center;
+  font-size: 28pt;
+  color: rgb(255, 104, 104);
 }
 
 h4{
   text-align: center;
+  font-size: 18pt;
+  color: rgb(220, 104, 255);
 }
 .container{
   margin-top: 20px;
@@ -38,4 +72,9 @@ p{
 
 button{
   margin-top: 10px;
+}
+
+.instructions{
+  margin-left: 50px;
+  margin-right: 50px;
 }
