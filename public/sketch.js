@@ -1,5 +1,6 @@
 //Cat Sprite: https://pop-shop-packs.itch.io/
 //Fruit Sprites: https://ninjikin.itch.io/fruit
+//Backgrounds: https://digitalmoons.itch.io/pixel-skies-demo
 
 //GLOBAL VARIABLES
 let myFont;
@@ -301,7 +302,7 @@ function gameTwo() {
   noStroke();
   fill(255, 92, 250)
   textSize(14);
-  text("Ready for a challenge? Dodge the naners and get the strawbs, all while trying to stay in coherence!", width / 2, (height / 8));
+  text("Challenge Level - Practice Coherence under stress! Dodge the nanerz and get the strawbz!", width / 2, (height / 8));
   textSize(12);
   fill(255);
   text("Use the left and right arrow keys to move Shortcake.", width / 2, (height / 6));
